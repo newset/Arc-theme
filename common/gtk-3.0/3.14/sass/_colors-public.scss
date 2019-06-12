@@ -28,7 +28,8 @@
 @define-color warning_color #{"" + $warning_color};
 @define-color error_color #{"" + $error_color};
 @define-color success_color #{"" + $success_color};
-@define-color placeholder_text_color #A8A8A8;
+@define-color placeholder_text_color #{#A8A8A8};
+@define-color link_color #{"" + $link_color};
 
 //WM
 $wm_highlight: lighten(opacify($header_bg, 1), 3%);
@@ -41,7 +42,7 @@ $wm_bg_unfocused: opacify($header_bg_backdrop, 1);
 @define-color wm_bg_unfocused #{"" + $wm_bg_unfocused};
 
 @define-color wm_highlight #{"" + $wm_highlight};
-@define-color wm_shadow alpha(black, 0.35);
+@define-color wm_shadow alpha(#{black}, 0.35);
 
 //WM Buttons
 

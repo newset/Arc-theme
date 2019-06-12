@@ -30,6 +30,7 @@ $font-family: Futura Bk bt, Cantarell, Sans-Serif;
 $_bubble_bg_color: opacify($osd_bg_color,0.25);
 $_bubble_fg_color: $osd_fg_color;
 $_bubble_borders_color: transparentize($osd_fg_color,0.8);
+$_shell_fg_color: white;
 
 stage {
   font-family: $font-family;
@@ -142,12 +143,17 @@ StScrollBar {
   -slider-active-background-color: $selected_bg_color;        //active trough fill
   -slider-active-border-color: transparentize(black, 1);      //active trough border
   -slider-border-width: 0;
-  -slider-handle-radius: 4px;
+  -slider-handle-radius: 0px;
   height: 18px;
   border: 0 solid transparent;
   border-right-width: 1px;
   border-left-width: 5px;
   color: transparent;
+
+  .popup-menu-item.selected & {
+    -slider-background-color: transparentize(black, 0.8);
+    -slider-active-background-color: $selected_fg_color;
+  }
 }
 
 //
@@ -177,11 +183,14 @@ StScrollBar {
   width: 50px;
   height: 20px;
   background-size: contain;
+  background-image: url("#{$asset_path}/switch/switch-off.svg");
 
-  &-us, &-intl {
-    background-image: url("#{$asset_path}/switch/switch-off.svg");
+  &:checked { background-image: url("#{$asset_path}/switch/switch-on.svg"); }
 
-    &:checked { background-image: url("#{$asset_path}/switch/switch-on.svg"); }
+  .popup-menu-item.selected & {
+    background-image: url("common-assets/switch/switch-off-selected.svg");
+
+    &:checked { background-image: url("common-assets/switch/switch-on-selected.svg"); }
   }
 }
 
@@ -330,17 +339,17 @@ StScrollBar {
 
   // Shutdown Button
   .button:last-child {
-    color: $selected_fg_color;
+    color: $destructive_fg_color;
     background-color: $destructive_color;
     border-color: $destructive_color;
 
     &:hover {
-      color: $selected_fg_color;
+      color: $destructive_fg_color;
       background-color: lighten($destructive_color, 9%);
       border-color: lighten($destructive_color, 9%);
     }
     &:active {
-      color: $selected_fg_color;
+      color: $destructive_fg_color;
       background-color: darken($destructive_color, 5%);
       border-color: darken($destructive_color, 5%);
     }
@@ -534,9 +543,9 @@ StScrollBar {
     }
 
     &:active, &.selected {
-      color: $fg_color;
+      color: $selected_fg_color;
       background-color: transparent;
-      border-image: url("#{$asset_path}/menu/menu-hover.svg") 9 9 1 1;
+      border-image: url("common-assets/menu/menu-hover.svg") 9 9 1 1;
     }
 
     &:insensitive {
@@ -584,7 +593,7 @@ StScrollBar {
 .popup-separator-menu-item {
   //-margin-horizontal: 24px;
   height: 2px; //not really the whole box
-  margin: 10px 0px;
+  margin: 0;
   background-color: transparent;
   border: none;
 	border-image: url("common-assets/menu/menu-separator.svg") 1 1 1 1;
@@ -610,7 +619,7 @@ StScrollBar {
   min-width: 64px;
   min-height: 64px;
 
-  color: $selected_fg_color;
+  color: $_shell_fg_color;
   background: none;
   border: none;
   border-radius: 5px;
@@ -656,6 +665,7 @@ StScrollBar {
   .item-box {
     padding: 8px;
     border-radius: 2px;
+    border: 1px solid transparent;
 
     &:outlined {
       padding: 8px;
@@ -690,7 +700,7 @@ StScrollBar {
   color: $osd_fg_color;
 
   &:highlighted {
-    color: $selected_fg_color;
+    color: $_shell_fg_color;
   }
 }
 
@@ -768,9 +778,14 @@ StScrollBar {
 // Top Bar
 //
 #panel {
+  $_panel_fg_color: $_shell_fg_color;
+
   font-weight: bold;
   height: 2.1em;
   min-height: 27px;
+  background-gradient-direction: none;
+  background-color: transparent;
+  border-bottom-width: 0;
   border-image: url('common-assets/panel/panel.svg') 1 1 1 1;
 
   // Fix dynamic top bar extension
@@ -810,7 +825,7 @@ StScrollBar {
     -natural-hpadding: 10px;
     -minimum-hpadding: 6px;
     font-weight: bold;
-    color: $selected_fg_color;
+    color: $_panel_fg_color;
     transition-duration: 100ms;
     border-bottom-width: 1px;
     border-color: transparent;
@@ -823,7 +838,7 @@ StScrollBar {
     }
 
     &:hover {
-      color: $selected_fg_color;
+      color: $_panel_fg_color;
       background-color: transparentize(black, 0.83);
       border-bottom-width: 1px;
       border-color: transparent;
@@ -1385,9 +1400,9 @@ StScrollBar {
 
 .list-search-result-content { spacing: 12px; padding: 12px; }
 
-.list-search-result-title { font-size: 1.5em; color: $selected_fg_color; }
+.list-search-result-title { font-size: 1.5em; color: $_shell_fg_color; }
 
-.list-search-result-description { color: darken($selected_fg_color, 20%); }
+.list-search-result-description { color: darken($_shell_fg_color, 20%); }
 
 .search-provider-icon { padding: 15px; }
 .search-provider-icon-more {
@@ -1402,31 +1417,17 @@ StScrollBar {
 #dash {
   font-size: 1em;
   color: $osd_fg_color;
-  background-color: transparent;
-  border: none;
-  padding: 6px 1px 6px 0px;
-  border-image: url('common-assets/dash/dash-left.svg') 3 3 3 3;
+  background-color: $dark_sidebar_bg;
+  border-color: rgba(0,0,0,0.4);
+  padding: 4px 0;
+  border-radius: 0 3px 3px 0;
 
-  .extended.left & { border-image: url('common-assets/dash/dash-extended-left.svg') 3 3 3 3; }
+  &:rtl { border-radius: 3px 0 0 3px; }
 
   .right &,
-  &:rtl {
-    padding: 6px 0px 6px 1px;
-    border-image: url('common-assets/dash/dash-right.svg') 3 3 3 3;
-  }
-  .extended.right & { border-image: url('common-assets/dash/dash-extended-right.svg') 3 3 3 3; }
+  &:rtl { padding: 4px 0; }
 
-  .bottom & {
-    padding: 1px 6px 0px 6px;
-    border-image: url('common-assets/dash/dash-bottom.svg') 3 3 3 3;
-  }
-  .extended.bottom & { border-image: url('common-assets/dash/dash-extended-bottom.svg') 3 3 3 3; }
-
-  .top & {
-    padding: 0px 6px 1px 6px;
-    border-image: url('common-assets/dash/dash-top.svg') 3 3 3 3;
-  }
-  .extended.top & { border-image: url('common-assets/dash/dash-extended-top.svg') 3 3 3 3; }
+  .top &, .bottom & { padding: 0; }
 
   .placeholder {
     background-image: url("common-assets/dash/dash-placeholder.svg");
@@ -1441,18 +1442,17 @@ StScrollBar {
 }
 
 .dash-item-container > StWidget {
-  padding: 0px 4px 0px 5px;
 
-  .right &, &:rtl { padding: 0px 5px 0px 4px; }
-  .bottom & { padding: 4px 0px 5px 0px; }
-  .top & { padding: 5px 0px 4px 0px; }
+  &, &:rtl, .right & { padding: 4px 8px; }
+
+  .top &, .bottom & { padding: 6px; }
 }
 
 //osd tooltip
 .dash-label {
   border-radius: 3px;
   padding: 4px 12px;
-  color: $selected_fg_color;
+  color: $_shell_fg_color;
   background-color: transparentize(black, 0.3);
   text-align: center;
   -x-offset: 3px;
@@ -1465,13 +1465,6 @@ StScrollBar {
 
 // Dash Buttons
 #dash .app-well-app {
-
-  .overview-icon,
-  .right & .overview-icon,
-  .bottom & .overview-icon,
-  .top & .overview-icon {
-    padding: 10px;
-  }
 
   &:hover .overview-icon,
   .right &:hover .overview-icon,
@@ -1491,7 +1484,7 @@ StScrollBar {
   &-running-dot {
     width: 11px;
     height: 2px;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
     background-color: $selected_bg_color;
   }
 }
@@ -1513,7 +1506,6 @@ StScrollBar {
 .show-apps {
 
   .overview-icon {
-    padding: 11px;
     background-color: transparentize(black, 0.5);
     border-radius: 2px;
     border: 0px solid;
@@ -1616,7 +1608,7 @@ StScrollBar {
 }
 
 %icon_tile {
-  color: $selected_fg_color;
+  color: $_shell_fg_color;
   border-radius: 2px;
   padding: 6px;
   border: 1px solid transparent;
@@ -1639,6 +1631,7 @@ StScrollBar {
   }
 
   &:active > .overview-icon, &:checked > .overview-icon {
+    color: $selected_fg_color;
     background-color: $selected_bg_color;
     box-shadow: none;
   }
@@ -1690,18 +1683,25 @@ StScrollBar {
 //
 // Workspace pager
 //
-.workspace-thumbnails { //container ala dash
-  visible-width: 40px; //amount visible before hover
-  spacing: 11px;
-  padding: 12px;
+.workspace-thumbnails,
+.workspace-thumbnails-left {
+  &, &:rtl {
+    visible-width: 40px;  //amount visible before hover
+    spacing: 11px;
+    padding: 12px;
+  }
+}
+
+.workspace-thumbnails,
+.workspace-thumbnails-left:rtl {
   padding-right: 7px;
   border-image: url("common-assets/dash/dash-right.svg") 9 9 9 9;
+}
 
-  &:rtl {
-    padding: 12px;
-    padding-left: 7px;
-    border-image: url("common-assets/dash/dash-left.svg") 9 9 9 9;
-  }
+.workspace-thumbnails:rtl,
+.workspace-thumbnails-left {
+  padding-left: 7px;
+  border-image: url("common-assets/dash/dash-left.svg") 9 9 9 9;
 }
 
 .workspace-thumbnail-indicator {
@@ -2182,7 +2182,7 @@ $legacy_icon_size: 24px;
     padding-right: .3em;
 
     &:hover {
-      color: $selected_fg_color;
+      color: $_shell_fg_color;
       text-shadow: black 0px 2px 2px;
     }
     &:selected {
